@@ -32,4 +32,9 @@ func WShandler(w http.ResponseWriter, r *http.Request) {
 		conn.WriteMessage(t, msg)
 		fmt.Println("Hello From Gorilla!")
 	}
+
+	err = conn.Close()
+	if err != nil {
+		log.Fatal(err)
+	}
 }

@@ -20,10 +20,11 @@ func main() {
 		c.String(200, "We got Gin")
 	})
 
+	server.RouterMain(app)
+
 	err = app.Run("localhost:8080")
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	server.RouterMain(app)
 }

@@ -25,5 +25,7 @@ func ConnectToRedis() error {
 	r := client.Get("test")
 	fmt.Println(r)
 
+	r.Val()
+
 	return nil
 }

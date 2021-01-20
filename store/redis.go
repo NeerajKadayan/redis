@@ -1,14 +1,14 @@
 package store
 
 import (
-	"fmt"
-
 	"github.com/go-redis/redis"
 )
 
+var Rdb *redis.Client
+
 // connect -- initiates connection to redis
 func ConnectToRedis() error {
-	client := redis.NewClient(&redis.Options{
+	Rdb = redis.NewClient(&redis.Options{
 		Addr:         "localhost:6379",
 		Password:     "",
 		DB:           0,
@@ -17,15 +17,10 @@ func ConnectToRedis() error {
 		MinIdleConns: 2,
 	})
 
-	_, err := client.Ping().Result()
+	_, err := Rdb.Ping().Result()
 	if err != nil {
 		return err
 	}
-
-	r := client.Get("test")
-	fmt.Println(r)
-
-	r.Val()
 
 	return nil
 }

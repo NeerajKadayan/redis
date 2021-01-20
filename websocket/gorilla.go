@@ -11,30 +11,39 @@ import (
 var wsupgrader = websocket.Upgrader{
 	ReadBufferSize:  1024,
 	WriteBufferSize: 1024,
+	CheckOrigin: func(r *http.Request) bool {
+		return true
+	},
+}
+
+func reader(conn *websocket.Conn) {
+	for {
+		messageType, p, err := conn.ReadMessage()
+		if err != nil {
+			log.Fatal(err)
+			return
+		}
+
+		log.Println(string(p))
+
+		err = conn.WriteMessage(messageType, p)
+		if err != nil {
+			log.Fatal(err)
+			return
+		}
+	}
 }
 
 func WShandler(w http.ResponseWriter, r *http.Request) {
-	r.Header.Set("Host", "localhost:8080")
-	r.Header.Set("Connection", "Upgrade")
-	r.Header.Set("Upgrade", "websocket")
-	r.Header.Set("sec-WebSocket-Extensions", "extensions")
+
 	conn, err := wsupgrader.Upgrade(w, r, nil)
 	if err != nil {
 		log.Fatal(err)
 		return
 	}
 
-	for {
-		t, msg, err := conn.ReadMessage()
-		if err != nil {
-			break
-		}
-		conn.WriteMessage(t, msg)
-		fmt.Println("Hello From Gorilla!")
-	}
+	reader(conn)
 
-	err = conn.Close()
-	if err != nil {
-		log.Fatal(err)
-	}
+	fmt.Println("websocket connected ...")
+
 }

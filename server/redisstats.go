@@ -1,26 +1,77 @@
 package server
 
-import "github.com/company-tests/tazapay/test/types"
+import (
+	"sync"
 
-func processKeys(input []string) types.Stats {
-	// process each key concurrently using go routines.
-	listener := make(chan types.Stats, 5)
+	"github.com/company-tests/tazapay/test/store"
+	"github.com/company-tests/tazapay/test/types"
+	"github.com/gin-gonic/gin"
+	"github.com/go-redis/redis"
+)
 
-	// worker wait groups.
-	// run go routines to fetch each key.
-	// NOTE : close the channel after use.
+// RedisInfo --
+func RedisInfo(c *gin.Context) {
+	r := store.Rdb
+	var inputKeys []string
+	inputKeys = append(inputKeys, "CPU", "CLUSTER", "CLIENTS", "MEMORY", "SERVER")
+	if len(inputKeys) == 0 {
+		c.JSON(400, gin.H{"message": "no input keys found!"})
+	}
 
-	go GetCPU(listener)
-	/*CPU := */ <-listener
-	// similarly repeat for all REDIS keys
-
-	return types.Stats{}
+	resp := processKeys(r, inputKeys)
+	c.String(200, "utf-8", resp)
 }
 
-func GetCPU(l chan types.Stats) types.Stats {
-	v := types.Stats{}
-	// iterate and store the value in types.Stats{}
+// processKeys --
+func processKeys(r *redis.Client, input []string) (val types.Stats) {
+	var wg sync.WaitGroup
+	wg.Add(len(input))
+	listener := make(chan types.Stats, len(input))
+	values := make(types.Stats, 0)
 
-	l <- v
-	return types.Stats{}
+	for i := range input {
+		go GetStats(input[i], r, listener, values, &wg)
+		val = <-listener
+	}
+
+	wg.Wait()
+	close(listener)
+	return
+}
+
+// GetStats --
+func GetStats(input string, r *redis.Client, l chan types.Stats,
+	val types.Stats, wg *sync.WaitGroup) {
+
+	defer wg.Done()
+
+	switch {
+
+	case input == "MEMORY":
+		v := r.Info("MEMORY")
+		val["MEMORY"] = v
+		l <- val
+
+	case input == "SERVER":
+		v := r.Info("SERVER")
+		val["SERVER"] = v
+		l <- val
+
+	case input == "CLIENTS":
+		v := r.Info("CLIENTS")
+		val["CLIENTS"] = v
+		l <- val
+
+	case input == "CLUSTER":
+		v := r.Info("CLUSTER")
+		val["CLUSTER"] = v
+		l <- val
+
+	case input == "CPU":
+		v := r.Info("CPU")
+		val["CPU"] = v
+		l <- val
+
+	}
+
 }

@@ -9,6 +9,7 @@ import (
 )
 
 func main() {
+	// establish connection to redis
 	err := store.ConnectToRedis()
 	if err != nil {
 		log.Fatal(err)
@@ -16,15 +17,11 @@ func main() {
 
 	app := gin.Default()
 
-	app.GET("/", func(c *gin.Context) {
-		c.String(200, "We got Gin")
-	})
-
 	server.RouterMain(app)
 
 	err = app.Run("localhost:8080")
 	if err != nil {
-		log.Fatal(err)
+		panic(err)
 	}
 
 }

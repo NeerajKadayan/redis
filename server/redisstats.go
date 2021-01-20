@@ -47,14 +47,9 @@ func GetStats(input string, r *redis.Client, l chan types.Stats,
 
 	switch {
 
-	case input == "MEMORY":
-		v := r.Info("MEMORY")
-		val["MEMORY"] = v
-		l <- val
-
-	case input == "SERVER":
-		v := r.Info("SERVER")
-		val["SERVER"] = v
+	case input == "CPU":
+		v := r.Info("CPU")
+		val["CPU"] = v
 		l <- val
 
 	case input == "CLIENTS":
@@ -67,11 +62,15 @@ func GetStats(input string, r *redis.Client, l chan types.Stats,
 		val["CLUSTER"] = v
 		l <- val
 
-	case input == "CPU":
-		v := r.Info("CPU")
-		val["CPU"] = v
+	case input == "SERVER":
+		v := r.Info("SERVER")
+		val["SERVER"] = v
+		l <- val
+
+	case input == "MEMORY":
+		v := r.Info("MEMORY")
+		val["MEMORY"] = v
 		l <- val
 
 	}
-
 }

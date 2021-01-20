@@ -5,6 +5,6 @@ import (
 )
 
 // Test --
-func Test(c *gin.Context) {
-	c.String(200, "We got Gin")
+func Home(c *gin.Context) {
+	c.String(200, "REDIS MONITOR")
 }

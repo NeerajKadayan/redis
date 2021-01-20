@@ -7,7 +7,7 @@ import (
 // RouterMain --
 func RouterMain(route *gin.Engine) {
 
-	route.GET("/", Test)
+	route.GET("/", Home)
 
 	// web socket
 	route.GET("/ws", WebSocketAPI)

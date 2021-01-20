@@ -3,9 +3,9 @@ package main
 import (
 	"log"
 
-	"github.com/company-tests/tazapay/test/server"
-	"github.com/company-tests/tazapay/test/store"
 	"github.com/gin-gonic/gin"
+	"github.com/neeraj-singh/redis/server"
+	"github.com/neeraj-singh/redis/store"
 )
 
 func main() {

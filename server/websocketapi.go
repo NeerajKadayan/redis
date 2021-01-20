@@ -1,8 +1,8 @@
 package server
 
 import (
-	"github.com/company-tests/tazapay/test/websocket"
 	"github.com/gin-gonic/gin"
+	"github.com/neeraj-singh/redis/websocket"
 )
 
 // WebSocketAPI --

@@ -3,10 +3,10 @@ package server
 import (
 	"sync"
 
-	"github.com/company-tests/tazapay/test/store"
-	"github.com/company-tests/tazapay/test/types"
 	"github.com/gin-gonic/gin"
 	"github.com/go-redis/redis"
+	"github.com/neeraj-singh/redis/store"
+	"github.com/neeraj-singh/redis/types"
 )
 
 // RedisInfo --

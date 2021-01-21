@@ -11,6 +11,8 @@ func RouterMain(route *gin.Engine) {
 
 	// web socket
 	route.GET("/ws", WebSocketAPI)
+
+	// Gives you an instantenous stat of the redis server.
 	route.GET("/redis", RedisInfo)
 
 }
